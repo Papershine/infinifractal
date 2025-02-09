@@ -1,31 +1,21 @@
 #include "Draw.h"
 #include "Mandlebrot.h"
 
-void draw(SDL_Surface* surface, int width, int height)
+void draw(SDL_Surface* surface)
 {
-  for (unsigned x=0; x<width; x++) {
-    for (unsigned y=0; y<height; y++) {
-      // Calculate the color at this point
-      // Set the pixel to that color
-      putPixel(surface, x, y, calculateColor(coordsToComplex(x, y, width, height)));
+  for (int x=0; x < surface->w; x++) {
+    for (int y=0; y < surface->h; y++) {
+      putPixel(surface, x, y, calculateColor(coordsToComplex(x, y, surface->w, surface->h)));
     }
   }
 }
 
 void putPixel(SDL_Surface* surface, int x, int y, Uint32 color) 
 {
-    if (x >= 0 && x < surface->w && y >= 0 && y < surface->h) {
-        Uint32* pixels = (Uint32*)surface->pixels;
-        pixels[(y * surface->w) + x] = color;
-    }
-}
-
-Uint32 coordsToRGB(int x, int y) {
-  uint8_t r = (x * 37) % 256;  // Generate Red component
-  uint8_t g = (y * 53) % 256;  // Generate Green component
-  uint8_t b = ((x + y) * 71) % 256;  // Generate Blue component
-
-  return (r << 16) | (g << 8) | b;
+  if (x >= 0 && x < surface->w && y >= 0 && y < surface->h) {
+    Uint32* pixels = (Uint32*)surface->pixels;
+    pixels[(y * surface->w) + x] = color;
+  }
 }
 
 Complex coordsToComplex(int x, int y, int width, int height) {

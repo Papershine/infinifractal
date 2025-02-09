@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <SDL2/SDL.h>
 #include <Draw.h>
 
@@ -19,7 +20,7 @@ int main(int argc, char **args)
   }
 
   // Create our window
-  window = SDL_CreateWindow("Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_SHOWN);
+  window = SDL_CreateWindow("Infinifractal", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_SHOWN);
 
   // Make sure creating the window succeeded
   if (!window)
@@ -41,7 +42,14 @@ int main(int argc, char **args)
   }
 
   //SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 255, 197, 211));
-  draw(winSurface, 1280, 720);
+  auto start = std::chrono::high_resolution_clock::now();
+
+  draw(winSurface);
+
+  auto end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double, std::milli> duration = end - start;
+  std::cout << "Draw time: " << duration.count() << " ms\n";
+
   SDL_UpdateWindowSurface(window);
 
   // Hack to get window to stay up

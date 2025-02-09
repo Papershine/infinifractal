@@ -1,7 +1,9 @@
+#include <algorithm>
 #include "Mandlebrot.h"
+#include "Hsl.h"
 
-int MANDLEBROT_THRESHOLD = 1000;
-int MAX_ITERATIONS = 50;
+int MANDLEBROT_THRESHOLD = 100;
+int MAX_ITERATIONS = 25;
 
 int calculateIterations(Complex z)
 {
@@ -17,6 +19,7 @@ int calculateIterations(Complex z)
 Uint32 calculateColor(Complex z)
 {
   int it = calculateIterations(z);
-  uint8_t color = static_cast<uint8_t>(255 * (static_cast<double>(it) / MAX_ITERATIONS));
-  return (color << 16) | (color << 8) | color;
+  uint16_t hue = static_cast<uint8_t>(230 * (static_cast<double>(it) / MAX_ITERATIONS));
+  
+  return Hsl(hue, 0.75, 0.75).toRgb();
 }

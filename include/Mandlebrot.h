@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sdl2/SDL.h>
+#include <SDL2/SDL.h>
 #include <complex>
 
 using Complex = std::complex<long double>;
