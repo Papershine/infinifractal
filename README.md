@@ -1,0 +1,1 @@
+Depends on SDL2. Run `brew install sdl2`
