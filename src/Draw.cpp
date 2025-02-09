@@ -18,7 +18,8 @@ void putPixel(SDL_Surface* surface, int x, int y, Uint32 color)
   }
 }
 
-Complex coordsToComplex(int x, int y, int width, int height) {
+Complex coordsToComplex(int x, int y, int width, int height) 
+{
   int REAL_LOWER_BOUND = -2;
   int REAL_UPPER_BOUND = 2;
   int COMPLEX_LOWER_BOUND = -1;

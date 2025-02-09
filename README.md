@@ -1,4 +1,4 @@
-# Infinifractal
+# infinifractal
 
 A Mandlebrot set fractal viewer
 
