@@ -3,6 +3,7 @@
 #include <complex>
 #include <SDL2/SDL.h>
 #include <Mandlebrot.hpp>
+#include <Threadpool.hpp>
 
 using Complex = std::complex<long double>;
 

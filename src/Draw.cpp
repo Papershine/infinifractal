@@ -1,11 +1,43 @@
 #include <Draw.hpp>
+#include <thread>
+#include <iostream>
+
+struct args {
+  int y;
+  int width;
+  int height;
+  std::mutex& buf_mutex;
+  std::vector<Uint32>& buf;
+};
+
+void task(void* arg) {
+  args *a = static_cast<args*>(arg);
+  std::vector<Uint32> task_buffer;
+
+  for (int x=0; x < a->width; x++) {
+    task_buffer.push_back(calculateColor(coordsToComplex(x, a->y, a->width, a->height)));
+  }
+
+  {
+    std::unique_lock lock(a->buf_mutex);
+    std::copy(task_buffer.begin(), task_buffer.end(), a->buf.begin() + (a->y * a->width));
+  }
+  delete a;
+}
 
 void draw(SDL_Surface* surface)
 {
-  for (int x=0; x < surface->w; x++) {
-    for (int y=0; y < surface->h; y++) {
-      putPixel(surface, x, y, calculateColor(coordsToComplex(x, y, surface->w, surface->h)));
-    }
+  std::vector<Uint32> pixel_buffer(surface->w * surface->h);
+  std::mutex buf_mutex;
+  Threadpool pool;
+  for (int y=0; y < surface->h; y++) {
+    args* task_args = new args {y, surface->w, surface->h, buf_mutex, pixel_buffer};
+    pool.schedule(task, task_args);
+  }
+  pool.join();
+  Uint32* pixels = (Uint32*)surface->pixels;
+  for (unsigned i=0; i<pixel_buffer.size(); i++) {
+    pixels[i] = pixel_buffer[i];
   }
 }
 
