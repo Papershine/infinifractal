@@ -1,5 +1,4 @@
-#include "Draw.h"
-#include "Mandlebrot.h"
+#include <Draw.hpp>
 
 void draw(SDL_Surface* surface)
 {
@@ -20,10 +19,10 @@ void putPixel(SDL_Surface* surface, int x, int y, Uint32 color)
 
 Complex coordsToComplex(int x, int y, int width, int height) 
 {
-  int REAL_LOWER_BOUND = -2;
-  int REAL_UPPER_BOUND = 2;
-  int COMPLEX_LOWER_BOUND = -1;
-  int COMPLEX_UPPER_BOUND = 1;
+  double REAL_LOWER_BOUND = -2.75;
+  double REAL_UPPER_BOUND = 1.75;
+  double COMPLEX_LOWER_BOUND = -1.25;
+  double COMPLEX_UPPER_BOUND = 1.25;
 
   long double dReal = (REAL_UPPER_BOUND - REAL_LOWER_BOUND) / static_cast<long double>(width);
   long double dIm = (COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND) / static_cast<long double>(height);

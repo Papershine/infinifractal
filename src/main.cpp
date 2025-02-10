@@ -1,9 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <SDL2/SDL.h>
-#include <Draw.h>
+#include <Draw.hpp>
 
-// You must include the command line parameters for your main function to be recognized by SDL
 int main(int argc, char **args)
 {
   SDL_Surface *winSurface = NULL;

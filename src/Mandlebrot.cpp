@@ -1,15 +1,13 @@
-#include <algorithm>
-#include "Mandlebrot.h"
-#include "Hsl.h"
+#include <Mandlebrot.hpp>
 
-int MANDLEBROT_THRESHOLD = 100;
+int MAX_MODULUS = 100;
 int MAX_ITERATIONS = 25;
 
 int calculateIterations(Complex z)
 {
   Complex value = 0;
   int iterations = 0;
-  while (std::abs(value) < MANDLEBROT_THRESHOLD && iterations < MAX_ITERATIONS) {
+  while (std::abs(value) < MAX_MODULUS && iterations < MAX_ITERATIONS) {
     value = std::pow(value, 2) + z;
     iterations++;
   }

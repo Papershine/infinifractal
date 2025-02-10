@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <SDL2/SDL.h>
 
 class Hsl {

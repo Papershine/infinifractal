@@ -1,8 +1,6 @@
-#include <algorithm>
-#include <iostream>
-#include "Hsl.h"
+#include <Hsl.hpp>
 
-// simple HSL to RGB function adapted from  Wikipedia
+// simple HSL to RGB function adapted from Wikipedia
 // https://en.wikipedia.org/wiki/HSL_and_HSV#Color_conversion_formulae
 Uint32 Hsl::toRgb() 
 {

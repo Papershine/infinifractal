@@ -5,7 +5,7 @@ LDFLAGS = `sdl2-config --cflags --libs`
 
 # Directories
 SRC_DIR = src
-INC_DIR = include
+INC_DIR = src
 BUILD_DIR = build
 
 # Source files and object files
