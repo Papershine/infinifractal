@@ -30,11 +30,14 @@ void draw(SDL_Surface* surface)
   std::vector<Uint32> pixel_buffer(surface->w * surface->h);
   std::mutex buf_mutex;
   Threadpool pool;
+
   for (int y=0; y < surface->h; y++) {
     args* task_args = new args {y, surface->w, surface->h, buf_mutex, pixel_buffer};
     pool.schedule(task, task_args);
   }
+
   pool.join();
+  
   Uint32* pixels = (Uint32*)surface->pixels;
   for (unsigned i=0; i<pixel_buffer.size(); i++) {
     pixels[i] = pixel_buffer[i];
