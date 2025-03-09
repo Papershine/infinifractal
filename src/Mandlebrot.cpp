@@ -1,23 +1,46 @@
 #include <Mandlebrot.hpp>
+#include <cmath>
 
-int MAX_MODULUS = 100;
-int MAX_ITERATIONS = 25;
+long double MAX_MODULUS = 2.0L;
+int MAX_ITERATIONS = 1000;
 
 int calculateIterations(Complex z)
 {
-  Complex value = 0;
+  Complex value(0.0L, 0.0L);
   int iterations = 0;
-  while (std::abs(value) < MAX_MODULUS && iterations < MAX_ITERATIONS) {
-    value = std::pow(value, 2) + z;
+  
+  long double modulusSquared = 0.0L;
+  
+  while (modulusSquared <= MAX_MODULUS * MAX_MODULUS && iterations < MAX_ITERATIONS) {
+    value = Complex(
+      value.real() * value.real() - value.imag() * value.imag(),
+      2.0L * value.real() * value.imag()
+    ) + z;
+    
+    modulusSquared = value.real() * value.real() + value.imag() * value.imag();
     iterations++;
   }
-  return iterations;
+  
+  if (iterations < MAX_ITERATIONS) {
+    long double smooth = iterations + 1.0L - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0L);
+    return static_cast<int>(smooth * 100);
+  }
+  
+  return iterations * 100;
 }
 
 Uint32 calculateColor(Complex z)
 {
-  int it = calculateIterations(z);
-  uint16_t hue = static_cast<uint8_t>(230 * (static_cast<double>(it) / MAX_ITERATIONS));
+  int scaledIterations = calculateIterations(z);
   
-  return Hsl(hue, 0.75, 0.75).toRgb();
+  if (scaledIterations >= MAX_ITERATIONS * 100) {
+    return (100 << 16) | (100 << 8) | 100;
+  }
+  
+  double hue = fmod((scaledIterations / 2.0), 360.0);
+  
+  double saturation = 0.4;
+  double lightness = 0.8;
+  
+  return Hsl(hue, saturation, lightness).toRgb();
 }

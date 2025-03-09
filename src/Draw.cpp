@@ -2,6 +2,11 @@
 #include <thread>
 #include <iostream>
 
+long double REAL_LOWER_BOUND = -2.75L;
+long double REAL_UPPER_BOUND = 1.75L;
+long double COMPLEX_LOWER_BOUND = -1.25L;
+long double COMPLEX_UPPER_BOUND = 1.25L;
+
 struct args {
   int y;
   int width;
@@ -54,11 +59,6 @@ void putPixel(SDL_Surface* surface, int x, int y, Uint32 color)
 
 Complex coordsToComplex(int x, int y, int width, int height) 
 {
-  double REAL_LOWER_BOUND = -2.75;
-  double REAL_UPPER_BOUND = 1.75;
-  double COMPLEX_LOWER_BOUND = -1.25;
-  double COMPLEX_UPPER_BOUND = 1.25;
-
   long double dReal = (REAL_UPPER_BOUND - REAL_LOWER_BOUND) / static_cast<long double>(width);
   long double dIm = (COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND) / static_cast<long double>(height);
 
@@ -66,4 +66,42 @@ Complex coordsToComplex(int x, int y, int width, int height)
   long double im = (COMPLEX_LOWER_BOUND + dIm * y);
   Complex coord(re, im);
   return coord;
+}
+
+void zoom(int mouseX, int mouseY, float zoomFactor, int width, int height) {
+  Complex center = coordsToComplex(mouseX, mouseY, width, height);
+  
+  long double realWidth = REAL_UPPER_BOUND - REAL_LOWER_BOUND;
+  long double complexHeight = COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND;
+  
+  long double newRealWidth = realWidth * zoomFactor;
+  long double newComplexHeight = complexHeight * zoomFactor;
+  
+  REAL_LOWER_BOUND = center.real() - (newRealWidth / 2);
+  REAL_UPPER_BOUND = center.real() + (newRealWidth / 2);
+  COMPLEX_LOWER_BOUND = center.imag() - (newComplexHeight / 2);
+  COMPLEX_UPPER_BOUND = center.imag() + (newComplexHeight / 2);
+  
+  std::cout << "New bounds: [" << REAL_LOWER_BOUND << ", " << REAL_UPPER_BOUND << "] x [" 
+            << COMPLEX_LOWER_BOUND << ", " << COMPLEX_UPPER_BOUND << "]\n";
+}
+
+void resetView() {
+  REAL_LOWER_BOUND = -2.75L;
+  REAL_UPPER_BOUND = 1.75L;
+  COMPLEX_LOWER_BOUND = -1.25L;
+  COMPLEX_UPPER_BOUND = 1.25L;
+}
+
+void pan(int deltaX, int deltaY, int width, int height) {
+  long double realScale = (REAL_UPPER_BOUND - REAL_LOWER_BOUND) / width;
+  long double complexScale = (COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND) / height;
+  
+  long double realShift = -deltaX * realScale;
+  long double complexShift = -deltaY * complexScale;
+  
+  REAL_LOWER_BOUND += realShift;
+  REAL_UPPER_BOUND += realShift;
+  COMPLEX_LOWER_BOUND += complexShift;
+  COMPLEX_UPPER_BOUND += complexShift;
 }
