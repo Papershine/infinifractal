@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++17
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++20 -I/opt/homebrew/Cellar/sdl2/2.32.2/include
 LDFLAGS = `sdl2-config --cflags --libs`
 
 # Directories
@@ -13,7 +13,7 @@ SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 # Output binary
-TARGET = app
+TARGET = infinifractal
 
 # Default rule
 all: $(TARGET)

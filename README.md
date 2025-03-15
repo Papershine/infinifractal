@@ -2,8 +2,9 @@
 
 A Mandlebrot set fractal viewer
 
+[Demo2](https://www.youtube.com/watch?v=PQSSzZF0RlU)
+
 ![Demo1](demo1.png)
-![Demo2](demo2.png)
 
 #### Implementation
 

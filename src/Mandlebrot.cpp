@@ -1,8 +1,8 @@
 #include <Mandlebrot.hpp>
-#include <cmath>
+#include <numbers>
 
 long double MAX_MODULUS = 2.0L;
-int MAX_ITERATIONS = 1000;
+int MAX_ITERATIONS = 500;
 
 int calculateIterations(Complex z)
 {
@@ -37,10 +37,15 @@ Uint32 calculateColor(Complex z)
     return (100 << 16) | (100 << 8) | 100;
   }
   
-  double hue = fmod((scaledIterations / 2.0), 360.0);
+  double angle = std::fmod((scaledIterations / 5.0), 360.0);
+  double radians = angle * std::numbers::pi / 180.0;
+
+  double offset = 170.0;
+  double amplitude = 255.0 - offset - 35.0;
   
-  double saturation = 0.4;
-  double lightness = 0.8;
+  uint8_t r = static_cast<uint8_t>(std::sin(radians) * amplitude + offset);
+  uint8_t g = static_cast<uint8_t>(std::sin(radians + 2.0 * std::numbers::pi / 3.0) * amplitude + offset);
+  uint8_t b = static_cast<uint8_t>(std::sin(radians + 4.0 * std::numbers::pi / 3.0) * amplitude + offset);
   
-  return Hsl(hue, saturation, lightness).toRgb();
+  return (r << 16) | (g << 8) | b;
 }
