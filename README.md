@@ -2,20 +2,19 @@
 
 A Mandlebrot set fractal viewer
 
-[Demo2](https://www.youtube.com/watch?v=PQSSzZF0RlU)
-
-![Demo1](demo1.png)
+https://github.com/user-attachments/assets/288905e8-af30-48d5-953c-795411c5eebf
 
 #### Implementation
 
 The graphics is handled by SDL2. On every rerender, we lock the pixel buffer, update all the pixels with the new colors, and then unlock it.
 
 For the calculation of the iterations under the Mandlebrot scheme, we set the divergence limit to be 2.0 and count the iterations. The maximum
-iterations we allow is 1000. However, integer iterations cause banding in the colors. Therefore, we use a formula as described in 
+iterations we allow is 500 for performance issues. However, integer iterations cause banding in the colors. Therefore, we use a formula as described in 
 [this article](https://rubenvannieuwpoort.nl/posts/smooth-iteration-count-for-the-mandelbrot-set) that allows for fractional iteration estimates, 
 since the number of iterations under the scheme is actually continuous.
 
-Another bottleneck in this program is due to the rounding performed while converting from HSL to RGB, which will be worked on to reduce color banding.
+Previously, there was a bottleneck in the program due to the rounding performed while converting from HSL to RGB, which caused color banding. To prevent that, we created
+a function that cycles through colors directly in RGB using a Sine function and appropriate phase shifts for each color.
 
 #### Runtime
 
