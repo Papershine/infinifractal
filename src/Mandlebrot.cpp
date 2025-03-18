@@ -1,28 +1,39 @@
 #include <Mandlebrot.hpp>
 #include <numbers>
 
-long double MAX_MODULUS = 2.0L;
-int MAX_ITERATIONS = 500;
+double MAX_MODULUS = 2.0;
+uint16_t MAX_ITERATIONS = 400;
 
-int calculateIterations(Complex z)
+int calculateIterations(Complex c)
 {
-  Complex value(0.0L, 0.0L);
-  int iterations = 0;
+  Complex z(0.0L, 0.0L);
+  uint16_t iterations = 0;
   
-  long double modulusSquared = 0.0L;
+  double modulusSquared = 0.0;
+  double maxModulusSquared = MAX_MODULUS * MAX_MODULUS;
+
+  long double nextReal = 0.0L;
+  long double nextImag = 0.0L;
   
-  while (modulusSquared <= MAX_MODULUS * MAX_MODULUS && iterations < MAX_ITERATIONS) {
-    value = Complex(
-      value.real() * value.real() - value.imag() * value.imag(),
-      2.0L * value.real() * value.imag()
-    ) + z;
+  while (iterations < MAX_ITERATIONS && modulusSquared <= maxModulusSquared) {
+    #pragma float_control(precise, off)
+    z = Complex(
+      nextReal,
+      nextImag
+    ) + c;
     
-    modulusSquared = value.real() * value.real() + value.imag() * value.imag();
+    long double real = z.real() * z.real();
+    long double imag = z.imag() * z.imag();
+
+    modulusSquared = real + imag;
     iterations++;
+
+    nextReal = real - imag;
+    nextImag = 2.0L * z.real() * z.imag();
   }
-  
+
   if (iterations < MAX_ITERATIONS) {
-    long double smooth = iterations + 1.0L - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0L);
+    double smooth = iterations + 1.0 - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0);
     return static_cast<int>(smooth * 100);
   }
   
@@ -37,7 +48,7 @@ Uint32 calculateColor(Complex z)
     return (100 << 16) | (100 << 8) | 100;
   }
   
-  double angle = std::fmod((scaledIterations / 5.0), 360.0);
+  double angle = std::fmod((scaledIterations / 10.0 + 150.0), 360.0);
   double radians = angle * std::numbers::pi / 180.0;
 
   double offset = 170.0;
