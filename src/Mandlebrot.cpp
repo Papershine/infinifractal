@@ -2,7 +2,7 @@
 #include <numbers>
 
 double MAX_MODULUS = 2.0;
-uint16_t MAX_ITERATIONS = 400;
+uint16_t MAX_ITERATIONS = 500;
 
 int calculateIterations(Complex c)
 {
@@ -33,7 +33,6 @@ int calculateIterations(Complex c)
   }
 
   if (iterations < MAX_ITERATIONS) {
-    #pragma float_control(precise, off)
     float smooth = iterations + 1.0f - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0f);
     return static_cast<int>(smooth * 100);
   }

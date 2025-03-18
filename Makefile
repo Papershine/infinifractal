@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++20 -I/opt/homebrew/Cellar/sdl2/2.32.2/include
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++20 -O3 -I/opt/homebrew/Cellar/sdl2/2.32.2/include
 LDFLAGS = `sdl2-config --cflags --libs`
 
 # Directories
