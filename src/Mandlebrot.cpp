@@ -9,8 +9,8 @@ int calculateIterations(Complex c)
   Complex z(0.0L, 0.0L);
   uint16_t iterations = 0;
   
-  double modulusSquared = 0.0;
-  double maxModulusSquared = MAX_MODULUS * MAX_MODULUS;
+  float modulusSquared = 0.0f;
+  float maxModulusSquared = MAX_MODULUS * MAX_MODULUS;
 
   long double nextReal = 0.0L;
   long double nextImag = 0.0L;
@@ -33,7 +33,8 @@ int calculateIterations(Complex c)
   }
 
   if (iterations < MAX_ITERATIONS) {
-    double smooth = iterations + 1.0 - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0);
+    #pragma float_control(precise, off)
+    float smooth = iterations + 1.0f - std::log(std::log(std::sqrt(modulusSquared))) / std::log(2.0f);
     return static_cast<int>(smooth * 100);
   }
   
