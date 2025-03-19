@@ -36,9 +36,9 @@ void mainloop(void *arg)
         
         float zoomFactor = 1.0f;
         if (e.mgesture.dDist > 0) {
-          zoomFactor = 0.9f;
+          zoomFactor = 0.95f;
         } else {
-          zoomFactor = 1.1f;
+          zoomFactor = 1.05f;
         }
         
         zoom(touchX, touchY, zoomFactor, winSurface->w, winSurface->h);
