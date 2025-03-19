@@ -81,8 +81,10 @@ void zoom(int mouseX, int mouseY, float zoomFactor, int width, int height) {
   COMPLEX_LOWER_BOUND = mouseComplex.imag() - (relativeY * newComplexHeight);
   COMPLEX_UPPER_BOUND = COMPLEX_LOWER_BOUND + newComplexHeight;
   
+  #ifndef __EMSCRIPTEN__
   std::cout << "New bounds: [" << REAL_LOWER_BOUND << ", " << REAL_UPPER_BOUND << "] x [" 
             << COMPLEX_LOWER_BOUND << ", " << COMPLEX_UPPER_BOUND << "]\n";
+  #endif
 }
 
 void resetView() {

@@ -1,38 +1,38 @@
-# Compiler and flags
 CXX = clang++
 CXXFLAGS = -Wall -Wextra -pedantic -std=c++20 -O3 -I/opt/homebrew/Cellar/sdl2/2.32.2/include
 LDFLAGS = `sdl2-config --cflags --libs`
 
-# Directories
+EM = em++
+EMFLAGS = -lm -O3 -std=c++20 --bind -sUSE_SDL=2 -sUSE_PTHREADS -sASYNCIFY -sPROXY_TO_PTHREAD -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency
+
 SRC_DIR = src
 INC_DIR = src
 BUILD_DIR = build
 
-# Source files and object files
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
-# Output binary
 TARGET = infinifractal
+WASM_TARGET = $(TARGET).js
 
-# Default rule
 all: $(TARGET)
 
-# Link the binary
+wasm:
+	$(EM) $(SRCS) -I$(INC_DIR) -o $(WASM_TARGET) $(EMFLAGS) --shell-file index.html
+
 $(TARGET): $(OBJS)
 	$(CXX) $^ -o $@ $(LDFLAGS)
 
-# Compile source files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c $< -o $@
 
-# Create build directory if it doesn't exist
 $(BUILD_DIR):
 	mkdir -p $@
 
-# Clean up
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-# Phony targets
-.PHONY: all clean
+clean_wasm:
+	rm -f $(WASM_TARGET) $(TARGET).wasm
+
+.PHONY: all clean clean_wasm

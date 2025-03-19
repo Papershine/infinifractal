@@ -34,4 +34,6 @@
 app
 .vscode
 build
-infinifractal
+infinifractal*
+
+.DS_Store

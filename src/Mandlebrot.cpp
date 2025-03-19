@@ -1,8 +1,13 @@
 #include <Mandlebrot.hpp>
 #include <numbers>
-
+#include <iostream>
 double MAX_MODULUS = 2.0;
+
+#ifdef __EMSCRIPTEN__
+uint16_t MAX_ITERATIONS = 100;
+#else
 uint16_t MAX_ITERATIONS = 500;
+#endif
 
 int calculateIterations(Complex c)
 {
