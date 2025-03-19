@@ -1,5 +1,7 @@
 # infinifractal
 
+https://infinifractal.hilarylau.io
+
 A Mandlebrot set fractal viewer in C++
 
 https://github.com/user-attachments/assets/288905e8-af30-48d5-953c-795411c5eebf

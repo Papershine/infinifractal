@@ -28,6 +28,23 @@ void mainloop(void *arg)
       #endif
       quit = true;
     }
+    else if (e.type == SDL_MULTIGESTURE)
+    {
+      if (e.mgesture.numFingers == 2 && std::abs(e.mgesture.dDist) > 0.002f) {
+        int touchX = static_cast<int>(e.mgesture.x * winSurface->w);
+        int touchY = static_cast<int>(e.mgesture.y * winSurface->h);
+        
+        float zoomFactor = 1.0f;
+        if (e.mgesture.dDist > 0) {
+          zoomFactor = 0.9f;
+        } else {
+          zoomFactor = 1.1f;
+        }
+        
+        zoom(touchX, touchY, zoomFactor, winSurface->w, winSurface->h);
+        needRedraw = true;
+      }
+    }
     else if (e.type == SDL_MOUSEWHEEL)
     {
       float zoomFactor = 1.0f;
@@ -164,6 +181,8 @@ int main()
     return 1;
   }
 
+  SDL_RecordGesture(-1);
+  
   #ifdef __EMSCRIPTEN__
   draw(winSurface);
   #else
