@@ -13,8 +13,6 @@ int main(int argc, char **args)
     std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
     return 1;
   }
-  
-  SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
 
   window = SDL_CreateWindow("infinifractal", 
                             SDL_WINDOWPOS_UNDEFINED, 
@@ -45,15 +43,11 @@ int main(int argc, char **args)
 
   SDL_Event e;
   bool quit = false;
-  int mouseX, mouseY;
   bool needRedraw = false;
   
-  float initialPinchDistance = 0.0f;
-  int touchX = 0, touchY = 0;
-  bool isPinching = false;
+  int lastMouseX = 0, lastMouseY = 0;
   
   bool isDragging = false;
-  int lastMouseX = 0, lastMouseY = 0;
   
   while (quit == false)
   {
@@ -71,7 +65,9 @@ int main(int argc, char **args)
         }
         
         if (e.wheel.y != 0) {
-          zoom(winSurface->w / 2, winSurface->h / 2, zoomFactor, winSurface->w, winSurface->h);
+          int mouseX, mouseY;
+          SDL_GetMouseState(&mouseX, &mouseY);
+          zoom(mouseX, mouseY, zoomFactor, winSurface->w, winSurface->h);
           needRedraw = true;
         }
       }
@@ -101,22 +97,6 @@ int main(int argc, char **args)
             lastMouseX = currentMouseX;
             lastMouseY = currentMouseY;
           }
-        }
-      }
-      else if (e.type == SDL_MULTIGESTURE) {
-        if (std::abs(e.mgesture.dDist) > 0.002f) {
-          touchX = static_cast<int>(e.mgesture.x * winSurface->w);
-          touchY = static_cast<int>(e.mgesture.y * winSurface->h);
-          
-          float zoomFactor = 1.0f;
-          if (e.mgesture.dDist > 0) {
-            zoomFactor = 1.0f + e.mgesture.dDist * 5.0f;
-          } else {
-            zoomFactor = 1.0f / (1.0f - e.mgesture.dDist * 5.0f);
-          }
-          
-          zoom(touchX, touchY, zoomFactor, winSurface->w, winSurface->h);
-          needRedraw = true;
         }
       }
       else if (e.type == SDL_KEYDOWN) {

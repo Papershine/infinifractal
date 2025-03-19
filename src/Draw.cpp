@@ -64,7 +64,7 @@ Complex coordsToComplex(int x, int y, int width, int height)
 }
 
 void zoom(int mouseX, int mouseY, float zoomFactor, int width, int height) {
-  Complex center = coordsToComplex(mouseX, mouseY, width, height);
+  Complex mouseComplex = coordsToComplex(mouseX, mouseY, width, height);
   
   long double realWidth = REAL_UPPER_BOUND - REAL_LOWER_BOUND;
   long double complexHeight = COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND;
@@ -72,10 +72,14 @@ void zoom(int mouseX, int mouseY, float zoomFactor, int width, int height) {
   long double newRealWidth = realWidth * zoomFactor;
   long double newComplexHeight = complexHeight * zoomFactor;
   
-  REAL_LOWER_BOUND = center.real() - (newRealWidth / 2);
-  REAL_UPPER_BOUND = center.real() + (newRealWidth / 2);
-  COMPLEX_LOWER_BOUND = center.imag() - (newComplexHeight / 2);
-  COMPLEX_UPPER_BOUND = center.imag() + (newComplexHeight / 2);
+  long double relativeX = (mouseComplex.real() - REAL_LOWER_BOUND) / realWidth;
+  long double relativeY = (mouseComplex.imag() - COMPLEX_LOWER_BOUND) / complexHeight;
+  
+  REAL_LOWER_BOUND = mouseComplex.real() - (relativeX * newRealWidth);
+  REAL_UPPER_BOUND = REAL_LOWER_BOUND + newRealWidth;
+  
+  COMPLEX_LOWER_BOUND = mouseComplex.imag() - (relativeY * newComplexHeight);
+  COMPLEX_UPPER_BOUND = COMPLEX_LOWER_BOUND + newComplexHeight;
   
   std::cout << "New bounds: [" << REAL_LOWER_BOUND << ", " << REAL_UPPER_BOUND << "] x [" 
             << COMPLEX_LOWER_BOUND << ", " << COMPLEX_UPPER_BOUND << "]\n";
