@@ -7,38 +7,26 @@ long double REAL_UPPER_BOUND = 1.75L;
 long double COMPLEX_LOWER_BOUND = -1.25L;
 long double COMPLEX_UPPER_BOUND = 1.25L;
 
-struct args {
-  int y;
-  int width;
-  int height;
-  std::mutex& buf_mutex;
-  Uint32* buf;
-};
-
-void task(void* arg) {
-  args *a = static_cast<args*>(arg);
+void task(int y, int width, int height, std::shared_ptr<std::mutex> buf_mutex, Uint32* buf) {
   std::vector<Uint32> task_buffer;
 
-  for (int x=0; x < a->width; x++) {
-    task_buffer.push_back(calculateColor(coordsToComplex(x, a->y, a->width, a->height)));
+  for (int x=0; x < width; x++) {
+    task_buffer.push_back(calculateColor(coordsToComplex(x, y, width, height)));
   }
 
   {
-    std::unique_lock lock(a->buf_mutex);
-    std::copy(task_buffer.begin(), task_buffer.end(), a->buf + (a->y * a->width));
+    std::unique_lock lock(*buf_mutex);
+    std::copy(task_buffer.begin(), task_buffer.end(), buf + (y * width));
   }
-  delete a;
 }
 
-void draw(SDL_Surface* surface)
+void draw(SDL_Surface* surface, std::shared_ptr<std::mutex> buf_mutex)
 {
   std::vector<Uint32> pixel_buffer(surface->w * surface->h);
-  std::mutex buf_mutex;
   Threadpool pool;
 
   for (int y=0; y < surface->h; y++) {
-    args* task_args = new args {y, surface->w, surface->h, buf_mutex, (Uint32*)surface->pixels};
-    pool.schedule(task, task_args);
+    pool.schedule(task, y, surface->w, surface->h, buf_mutex, (Uint32*)surface->pixels);
   }
 
   pool.join();

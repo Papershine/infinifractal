@@ -134,11 +134,12 @@ void mainloop(void *arg)
 
   if (needRedraw)
   {
+    std::shared_ptr<std::mutex> buf_ptr = std::make_shared<std::mutex>();
     #ifdef __EMSCRIPTEN__
-    draw(winSurface);
+    draw(winSurfac, buf_ptr);
     #else
     auto start = std::chrono::high_resolution_clock::now();
-    draw(winSurface);
+    draw(winSurface, buf_ptr);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;
     std::cout << "Redraw time: " << duration.count() << " ms\n";
@@ -183,11 +184,12 @@ int main()
 
   SDL_RecordGesture(-1);
   
+  std::shared_ptr<std::mutex> buf_ptr = std::make_shared<std::mutex>();
   #ifdef __EMSCRIPTEN__
-  draw(winSurface);
+  draw(winSurface, buf_ptr);
   #else
   auto start = std::chrono::high_resolution_clock::now();
-  draw(winSurface);
+  draw(winSurface, buf_ptr);
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> duration = end - start;
   std::cout << "Draw time: " << duration.count() << " ms\n";
