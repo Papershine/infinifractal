@@ -3,12 +3,12 @@
 #include <numbers>
 #include <iostream>
 
-double MAX_MODULUS = 2.0;
+constexpr double MAX_MODULUS = 2.0;
 
 #ifdef __EMSCRIPTEN__
-uint16_t MAX_ITERATIONS = 100;
+constexpr uint16_t MAX_ITERATIONS = 100;
 #else
-uint16_t MAX_ITERATIONS = 500;
+constexpr uint16_t MAX_ITERATIONS = 500;
 #endif
 
 int calculateIterations(Complex c)
@@ -55,7 +55,7 @@ Uint32 calculateColor(Complex z)
     return (100 << 16) | (100 << 8) | 100;
   }
 
-  int i = (scaledIterations + 1000) % LUT_SIZE;
+  int i = (scaledIterations + LUT_SIZE/4) % LUT_SIZE;
   uint8_t r = getColorLUT().r[i];
   uint8_t g = getColorLUT().g[i];
   uint8_t b = getColorLUT().b[i];

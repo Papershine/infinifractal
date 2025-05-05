@@ -7,7 +7,7 @@ long double REAL_UPPER_BOUND = 1.75L;
 long double COMPLEX_LOWER_BOUND = -1.25L;
 long double COMPLEX_UPPER_BOUND = 1.25L;
 
-void task(int y, int width, int height, std::shared_ptr<std::mutex> buf_mutex, Uint32* buf) {
+void task(int y, int width, int height, Uint32* buf) {
   std::vector<Uint32> task_buffer;
 
   for (int x=0; x < width; x++) {
@@ -15,18 +15,17 @@ void task(int y, int width, int height, std::shared_ptr<std::mutex> buf_mutex, U
   }
 
   {
-    std::unique_lock lock(*buf_mutex);
     std::copy(task_buffer.begin(), task_buffer.end(), buf + (y * width));
   }
 }
 
-void draw(SDL_Surface* surface, std::shared_ptr<std::mutex> buf_mutex)
+void draw(SDL_Surface* surface)
 {
   std::vector<Uint32> pixel_buffer(surface->w * surface->h);
   Threadpool pool;
 
   for (int y=0; y < surface->h; y++) {
-    pool.schedule(task, y, surface->w, surface->h, buf_mutex, (Uint32*)surface->pixels);
+    pool.schedule(task, y, surface->w, surface->h, (Uint32*)surface->pixels);
   }
 
   pool.join();
