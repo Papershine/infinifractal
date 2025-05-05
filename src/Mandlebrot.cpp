@@ -1,6 +1,8 @@
 #include <Mandlebrot.hpp>
+#include <Color.hpp>
 #include <numbers>
 #include <iostream>
+
 double MAX_MODULUS = 2.0;
 
 #ifdef __EMSCRIPTEN__
@@ -52,16 +54,21 @@ Uint32 calculateColor(Complex z)
   if (scaledIterations >= MAX_ITERATIONS * 100) {
     return (100 << 16) | (100 << 8) | 100;
   }
-  
-  double angle = std::fmod((scaledIterations / 10.0 + 150.0), 360.0);
-  double radians = angle * std::numbers::pi / 180.0;
 
-  double offset = 170.0;
-  double amplitude = 255.0 - offset - 35.0;
+  int i = (scaledIterations + 1000) % LUT_SIZE;
+  uint8_t r = getColorLUT().r[i];
+  uint8_t g = getColorLUT().g[i];
+  uint8_t b = getColorLUT().b[i];
   
-  uint8_t r = static_cast<uint8_t>(std::sin(radians) * amplitude + offset);
-  uint8_t g = static_cast<uint8_t>(std::sin(radians + 2.0 * std::numbers::pi / 3.0) * amplitude + offset);
-  uint8_t b = static_cast<uint8_t>(std::sin(radians + 4.0 * std::numbers::pi / 3.0) * amplitude + offset);
+  // double angle = std::fmod((scaledIterations / 10.0 + 150.0), 360.0);
+  // double radians = angle * std::numbers::pi / 180.0;
+
+  // double offset = 170.0;
+  // double amplitude = 255.0 - offset - 35.0;
+  
+  // uint8_t r = static_cast<uint8_t>(interpSin(radians) * amplitude + offset);
+  // uint8_t g = static_cast<uint8_t>(std::sin(radians + 2.0 * std::numbers::pi / 3.0) * amplitude + offset);
+  // uint8_t b = static_cast<uint8_t>(std::sin(radians + 4.0 * std::numbers::pi / 3.0) * amplitude + offset);
   
   return (r << 16) | (g << 8) | b;
 }

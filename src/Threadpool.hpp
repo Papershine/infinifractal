@@ -2,12 +2,6 @@
 #include <mutex>
 #include <condition_variable>
 
-template <typename... Args>
-struct Task {
-  std::function<void(Args...)> func;
-  std::tuple<Args...> arg;
-};
-
 class Threadpool {
   public:
     unsigned max_threads;
@@ -65,7 +59,7 @@ class Threadpool {
             return;
           }
 
-          task = this->queue.front();
+          task = std::move(this->queue.front());
           this->queue.pop();
         }
 
