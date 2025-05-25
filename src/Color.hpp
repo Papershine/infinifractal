@@ -10,5 +10,5 @@ struct RGBLUT {
     std::vector<uint8_t> r, g, b;
 };
 
-RGBLUT generateColorLUT();
-const RGBLUT& getColorLUT();
+RGBLUT generate_color_lut();
+const RGBLUT& get_color_lut();

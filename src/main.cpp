@@ -128,9 +128,7 @@ void mainloop(void *arg)
         long double aspectRatio = static_cast<long double>(winSurface->w) / static_cast<long double>(winSurface->h);
           
         long double realWidth = REAL_UPPER_BOUND - REAL_LOWER_BOUND;
-        long double complexHeight = COMPLEX_UPPER_BOUND - COMPLEX_LOWER_BOUND;
         long double complexCenter = (COMPLEX_UPPER_BOUND + COMPLEX_LOWER_BOUND) / 2.0L;
-        long double realCenter = (REAL_UPPER_BOUND + REAL_LOWER_BOUND) / 2.0L;
           
         long double newComplexHeight = realWidth / aspectRatio;
           

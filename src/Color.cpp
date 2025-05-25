@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <Color.hpp>
 
-RGBLUT generateColorLUT() {
+RGBLUT generate_color_lut() {
     #ifndef __EMSCRIPTEN__
     auto start = std::chrono::high_resolution_clock::now();
     #endif
@@ -32,7 +32,7 @@ RGBLUT generateColorLUT() {
     return lut;
 }
 
-const RGBLUT& getColorLUT() {
-    static const RGBLUT lut = generateColorLUT();
+const RGBLUT& get_color_lut() {
+    static const RGBLUT lut = generate_color_lut();
     return lut;
 }

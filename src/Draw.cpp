@@ -61,14 +61,6 @@ void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bo
   delete[] pixel_buffer;
 }
 
-void putPixel(SDL_Surface* surface, int x, int y, Uint32 color) 
-{
-  if (x >= 0 && x < surface->w && y >= 0 && y < surface->h) {
-    Uint32* pixels = (Uint32*)surface->pixels;
-    pixels[(y * surface->w) + x] = color;
-  }
-}
-
 Complex coordsToComplex(int x, int y, int width, int height) 
 {
   long double dReal = (REAL_UPPER_BOUND - REAL_LOWER_BOUND) / static_cast<long double>(width);

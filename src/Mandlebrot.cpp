@@ -56,9 +56,9 @@ Uint32 calculateColor(Complex z, const SDL_PixelFormat *format)
   }
 
   int i = (scaledIterations + LUT_SIZE/4) % LUT_SIZE;
-  uint8_t r = getColorLUT().r[i];
-  uint8_t g = getColorLUT().g[i];
-  uint8_t b = getColorLUT().b[i];
+  uint8_t r = get_color_lut().r[i];
+  uint8_t g = get_color_lut().g[i];
+  uint8_t b = get_color_lut().b[i];
   
   return SDL_MapRGB(format, r, g, b);;
 }
