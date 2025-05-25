@@ -11,6 +11,16 @@ int lastMouseX = 0, lastMouseY = 0;
 bool isDragging = false;
 bool quit = false;
 
+constexpr int WINDOW_WIDTH = 1280;
+constexpr int WINDOW_HEIGHT = 720;
+
+#ifdef __EMSCRIPTEN__
+int resScale = 4;
+SDL_Surface *halfResSurface = nullptr;
+SDL_Surface *quarterResSurface = nullptr;
+std::atomic<bool> background_draw_allowed(false);
+#endif
+
 void mainloop(void *arg)
 {
   SDL_Window *window = (SDL_Window *)arg;
@@ -126,6 +136,13 @@ void mainloop(void *arg)
           
         COMPLEX_LOWER_BOUND = complexCenter - (newComplexHeight / 2.0L);
         COMPLEX_UPPER_BOUND = complexCenter + (newComplexHeight / 2.0L);
+
+        #ifdef __EMSCRIPTEN__
+        SDL_FreeSurface(halfResSurface);
+        halfResSurface = SDL_CreateRGBSurface(0, winSurface->w / 2, winSurface->h / 2, 32, 0, 0, 0, 0);
+        SDL_FreeSurface(quarterResSurface);
+        quarterResSurface = SDL_CreateRGBSurface(0, winSurface->w / 4, winSurface->h / 4, 32, 0, 0, 0, 0);
+        #endif
         
         needRedraw = true;
       }
@@ -135,7 +152,11 @@ void mainloop(void *arg)
   if (needRedraw)
   {
     #ifdef __EMSCRIPTEN__
-    draw(winSurface);
+    std::cout << "redraw" << SDL_GetError() << std::endl;
+    resScale = 4;
+    draw(quarterResSurface);
+    SDL_Rect dstRect = {0, 0, winSurface->w, winSurface->h};
+    SDL_BlitScaled(quarterResSurface, NULL, winSurface, &dstRect);
     #else
     auto start = std::chrono::high_resolution_clock::now();
     draw(winSurface);
@@ -145,7 +166,27 @@ void mainloop(void *arg)
     #endif
     SDL_UpdateWindowSurface(window);
     needRedraw = false;
+    #ifdef __EMSCRIPTEN__
+    background_draw_allowed.store(false);
+    #endif
   }
+  #ifdef __EMSCRIPTEN__
+  else if (resScale == 2)
+  {
+    resScale = 1;
+    background_draw_allowed.store(true);
+    std::thread t(draw_interruptible, winSurface, window, &background_draw_allowed);
+    t.detach();
+  }
+  else if (resScale == 4)
+  {
+    resScale = 2;
+    draw(halfResSurface);
+    SDL_Rect dstRect = {0, 0, winSurface->w, winSurface->h};
+    SDL_BlitScaled(halfResSurface, NULL, winSurface, &dstRect);
+    SDL_UpdateWindowSurface(window);
+  }
+  #endif
 
   SDL_Delay(10);
 }
@@ -164,7 +205,7 @@ int main()
   window = SDL_CreateWindow("infinifractal",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
-                            1280, 720,
+                            WINDOW_WIDTH, WINDOW_HEIGHT,
                             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
   if (!window)
@@ -184,7 +225,11 @@ int main()
   SDL_RecordGesture(-1);
   
   #ifdef __EMSCRIPTEN__
-  draw(winSurface);
+  quarterResSurface = SDL_CreateRGBSurface(0, winSurface->w / 4, winSurface->h / 4, 32, 0, 0, 0, 0);
+  halfResSurface = SDL_CreateRGBSurface(0, winSurface->w / 2, winSurface->h / 2, 32, 0, 0, 0, 0);
+  draw(quarterResSurface);
+  SDL_Rect dstRect = {0, 0, winSurface->w, winSurface->h};
+  SDL_BlitScaled(quarterResSurface, NULL, winSurface, &dstRect);
   #else
   auto start = std::chrono::high_resolution_clock::now();
   draw(winSurface);

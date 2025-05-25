@@ -4,6 +4,7 @@
 #include <iostream>
 
 constexpr double MAX_MODULUS = 2.0;
+constexpr double MAX_MODULUS_SQUARED = MAX_MODULUS * MAX_MODULUS;
 
 #ifdef __EMSCRIPTEN__
 constexpr uint16_t MAX_ITERATIONS = 100;
@@ -17,12 +18,11 @@ int calculateIterations(Complex c)
   uint16_t iterations = 0;
   
   float modulusSquared = 0.0f;
-  float maxModulusSquared = MAX_MODULUS * MAX_MODULUS;
 
   long double nextReal = 0.0L;
   long double nextImag = 0.0L;
   
-  while (iterations < MAX_ITERATIONS && modulusSquared <= maxModulusSquared) {
+  while (iterations < MAX_ITERATIONS && modulusSquared <= MAX_MODULUS_SQUARED) {
     #pragma float_control(precise, off)
     z = Complex(
       nextReal,
@@ -47,7 +47,7 @@ int calculateIterations(Complex c)
   return iterations * 100;
 }
 
-Uint32 calculateColor(Complex z)
+Uint32 calculateColor(Complex z, const SDL_PixelFormat *format)
 {
   int scaledIterations = calculateIterations(z);
   
@@ -60,5 +60,5 @@ Uint32 calculateColor(Complex z)
   uint8_t g = getColorLUT().g[i];
   uint8_t b = getColorLUT().b[i];
   
-  return (r << 16) | (g << 8) | b;
+  return SDL_MapRGB(format, r, g, b);;
 }

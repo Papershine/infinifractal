@@ -13,6 +13,7 @@ extern long double COMPLEX_LOWER_BOUND;
 extern long double COMPLEX_UPPER_BOUND;
 
 void draw(SDL_Surface* surface);
+void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bool>* background_draw_allowed);
 void putPixel(SDL_Surface* surface, int x, int y, Uint32 color);
 Complex coordsToComplex(int x, int y, int width, int height);
 

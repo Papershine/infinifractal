@@ -7,11 +7,11 @@ long double REAL_UPPER_BOUND = 1.75L;
 long double COMPLEX_LOWER_BOUND = -1.25L;
 long double COMPLEX_UPPER_BOUND = 1.25L;
 
-void task(int y, int width, int height, Uint32* buf) {
-  std::vector<Uint32> task_buffer;
+void task(int y, int width, int height, Uint32* buf, const SDL_PixelFormat *format) {
+  std::vector<Uint32> task_buffer(width);
 
   for (int x=0; x < width; x++) {
-    task_buffer.push_back(calculateColor(coordsToComplex(x, y, width, height)));
+    task_buffer[x] = calculateColor(coordsToComplex(x, y, width, height), format);
   }
 
   {
@@ -21,14 +21,47 @@ void task(int y, int width, int height, Uint32* buf) {
 
 void draw(SDL_Surface* surface)
 {
-  std::vector<Uint32> pixel_buffer(surface->w * surface->h);
   Threadpool pool;
 
   for (int y=0; y < surface->h; y++) {
-    pool.schedule(task, y, surface->w, surface->h, (Uint32*)surface->pixels);
+    pool.schedule(task, y, surface->w, surface->h, (Uint32*)surface->pixels, surface->format);
   }
 
   pool.join();
+}
+
+void draw_line_interruptible(int y, int width, int height, Uint32* buf, const SDL_PixelFormat *format, std::atomic<bool>* background_draw_allowed) {
+  std::vector<Uint32> task_buffer(width);
+
+  for (int x=0; x < width; x++) {
+    if (!(*background_draw_allowed).load()) {
+      return;
+    }
+    task_buffer[x] = calculateColor(coordsToComplex(x, y, width, height), format);
+  }
+
+  std::copy(task_buffer.begin(), task_buffer.end(), buf + (y * width));
+}
+
+void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bool>* background_draw_allowed)
+{
+  std::cout << (*background_draw_allowed).load() << std::endl;
+  Uint32* pixel_buffer = new Uint32[surface->w * surface->h];
+  Threadpool pool;
+
+  for (int y=0; y < surface->h; y++) {
+    pool.schedule(draw_line_interruptible, y, surface->w, surface->h, pixel_buffer, surface->format, background_draw_allowed);
+  }
+
+  pool.join();
+
+  std::cout << "done calc" << std::endl;
+  std::cout << (*background_draw_allowed).load() << std::endl;
+  if ((*background_draw_allowed).load()) {
+    std::copy(pixel_buffer, pixel_buffer + surface->w * surface->h, (Uint32*)surface->pixels);
+    SDL_UpdateWindowSurface(window);
+  }
+  delete[] pixel_buffer;
 }
 
 void putPixel(SDL_Surface* surface, int x, int y, Uint32 color) 

@@ -7,4 +7,4 @@
 using Complex = std::complex<long double>;
 
 int calculateIterations(Complex z);
-Uint32 calculateColor(Complex z);
+Uint32 calculateColor(Complex z, const SDL_PixelFormat *format);
