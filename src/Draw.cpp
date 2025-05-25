@@ -54,9 +54,7 @@ void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bo
   }
 
   pool.join();
-
-  std::cout << "done calc" << std::endl;
-  std::cout << (*background_draw_allowed).load() << std::endl;
+  
   if ((*background_draw_allowed).load()) {
     std::copy(pixel_buffer, pixel_buffer + surface->w * surface->h, (Uint32*)surface->pixels);
     SDL_UpdateWindowSurface(window);
