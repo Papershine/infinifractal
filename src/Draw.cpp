@@ -45,7 +45,6 @@ void draw_line_interruptible(int y, int width, int height, Uint32* buf, const SD
 
 void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bool>* background_draw_allowed)
 {
-  std::cout << (*background_draw_allowed).load() << std::endl;
   Uint32* pixel_buffer = new Uint32[surface->w * surface->h];
   Threadpool pool;
 
@@ -54,7 +53,7 @@ void draw_interruptible(SDL_Surface* surface, SDL_Window* window, std::atomic<bo
   }
 
   pool.join();
-  
+
   if ((*background_draw_allowed).load()) {
     std::copy(pixel_buffer, pixel_buffer + surface->w * surface->h, (Uint32*)surface->pixels);
     SDL_UpdateWindowSurface(window);

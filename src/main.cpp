@@ -152,7 +152,6 @@ void mainloop(void *arg)
   if (needRedraw)
   {
     #ifdef __EMSCRIPTEN__
-    std::cout << "redraw" << SDL_GetError() << std::endl;
     resScale = 4;
     draw(quarterResSurface);
     SDL_Rect dstRect = {0, 0, winSurface->w, winSurface->h};
