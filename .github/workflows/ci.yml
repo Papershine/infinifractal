@@ -1,4 +1,4 @@
-name: Build WebAssembly and Deploy
+name: Build Emscripten and Deploy
 
 on:
   push:
@@ -16,14 +16,17 @@ jobs:
         with:
           version: latest
 
-      - name: Build WebAssembly
+      - name: Build
         run: make wasm
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: |
-            infinifractal.js
-            infinifractal.wasm
-            index.html
+      - name: Move outputs
+        run: |
+          mkdir dist
+          mv infinifractal.js dist/
+          mv infinifractal.wasm dist/
+          cp index.html dist/
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages publish dist --project-name=infinifractal
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
