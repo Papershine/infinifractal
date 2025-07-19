@@ -4,7 +4,7 @@ https://infinifractal.hilarylau.io
 
 A Mandlebrot set fractal viewer in C++. Continuously deployed and ccessible through the browser using Emscripten.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/v2b3p7CSwAQ?si=d9gyjIJLUlf-M8Iu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/v2b3p7CSwAQ/0.jpg)](https://www.youtube.com/watch?v=v2b3p7CSwAQ)
 
 #### Implementation
 
