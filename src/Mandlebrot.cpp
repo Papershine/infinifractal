@@ -7,7 +7,7 @@ constexpr double MAX_MODULUS = 2.0;
 constexpr double MAX_MODULUS_SQUARED = MAX_MODULUS * MAX_MODULUS;
 
 #ifdef __EMSCRIPTEN__
-constexpr uint16_t MAX_ITERATIONS = 250;
+constexpr uint16_t MAX_ITERATIONS = 150;
 #else
 constexpr uint16_t MAX_ITERATIONS = 500;
 #endif
