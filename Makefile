@@ -18,7 +18,7 @@ WASM_TARGET = $(TARGET).js
 all: $(TARGET)
 
 wasm:
-	$(EM) $(SRCS) -I$(INC_DIR) -o $(WASM_TARGET) $(EMFLAGS) --shell-file index.html
+	$(EM) $(SRCS) -I$(INC_DIR) -o $(WASM_TARGET) $(EMFLAGS) --shell-file dist/index.html
 
 $(TARGET): $(OBJS)
 	$(CXX) $^ -o $@ $(LDFLAGS)
