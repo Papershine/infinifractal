@@ -21,12 +21,10 @@ jobs:
 
       - name: Move outputs
         run: |
-          mkdir dist
           mv infinifractal.js dist/
           mv infinifractal.wasm dist/
-          cp index.html dist/
 
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages publish dist --project-name=infinifractal
+        run: npx wrangler pages deploy dist --project-name=infinifractal
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
